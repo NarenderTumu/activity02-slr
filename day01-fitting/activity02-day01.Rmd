@@ -1,8 +1,81 @@
 ---
 title: "Activity 2 - Day 1"
+author: "Narender"
 output: github_document
 ---
 
 ```{setup, include=FALSE}
+
 knitr::opts_chunk$set(echo = TRUE)
+
 ```
+
+## Task2 : Loading packages
+  
+```{r message=FALSE, warning=FALSE}
+library(tidyverse)
+library(tidymodels)
+```
+
+
+## Task3 :  Loading the data set
+
+```{r}
+
+hfi<-readr::read_csv("https://www.openintro.org/data/csv/hfi.csv",show_col_types = FALSE)
+
+```
+
+**1) The hfi dataset has 1458 observations and 123 variables (1458 * 123). Each row represents data of a country for that specific year**
+  
+  
+  
+## filtering the dataframe by year
+  
+```{r}
+
+hfi_2016 <- hfi %>% filter(hfi$year== 2016)
+
+```
+
+**2) I would use a scatter plot to visualize the relationship between pf_score and pf_expression_control**
+  
+  
+## Plot
+  
+```{r}
+plot1<-hfi_2016 %>% ggplot(aes(x=pf_expression_control,y=pf_score))+
+  geom_point(color="red")+
+  geom_smooth(method = lm)+
+  scale_x_continuous(breaks = c(0,2,4,6,8))+
+  scale_y_continuous(breaks = c(0,2,4,6,8))+
+  labs(title= "Relationship between pf_score and pf_expression_control",
+       x="pf_expression control",
+       y="pf_score")+
+  theme_bw()
+
+
+plot1
+```
+
+**3) The relationship looks linear and we can predict the pf_score using this linear model when given the pf_expression_control**
+  
+  
+## Task4 : Sum of Squared residuals
+  
+**4) The smallest sum of square that I have got was 104.954 when compared to other sum of squares (106.075, 112.042, 106.772, 108.213, 118.636) that I got while trying to minimize the sum of squared residuals.**
+  
+  
+## Task5 : Linear model
+  
+```{r}
+m1 <- lm(pf_score ~ pf_expression_control, data = hfi_2016)
+tidy(m1)
+```
+
+**5) The Y-intercept from the equation was 4.28**
+  
+**6) The slope from the equation was 0.542**
+  
+  
+  
