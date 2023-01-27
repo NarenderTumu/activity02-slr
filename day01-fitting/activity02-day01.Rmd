@@ -1,5 +1,5 @@
 ---
-title: "Activity 2 - Day 1"
+title: "Activity 2"
 author: "Narender"
 output: github_document
 ---
@@ -9,6 +9,8 @@ output: github_document
 knitr::opts_chunk$set(echo = TRUE)
 
 ```
+
+# Day1 - Activity2
 
 ## Task2 : Loading packages
   
@@ -35,6 +37,8 @@ hfi<-readr::read_csv("https://www.openintro.org/data/csv/hfi.csv",show_col_types
 ```{r}
 
 hfi_2016 <- hfi %>% filter(hfi$year== 2016)
+
+hfi_new<-hfi_2016 %>% select(pf_expression_control,pf_score)
 
 ```
 
@@ -79,3 +83,74 @@ tidy(m1)
   
   
   
+# Day2 - Activity2
+  
+## Task2: Overall model fit
+
+```{r}
+# Correlation coefficient between pf_expression_control and pf_score
+
+cor_coeff <-cor(hfi_2016$pf_expression_control,hfi_2016$pf_score,use ="everything",method = c("pearson","kendall","spearman"))
+
+cor_coeff
+```
+**1) The correlation coefficient for this model means how related the pf_expression_control and pf_score are. The correlation coefficient is 0.845**
+
+
+```{r}
+glance(m1)
+```
+
+**2) The value of R-square for this model is 0.714**
+**3) It explains the proportion of variation in pf_score explained by pf_expression_control**
+
+
+```{r}
+m2 <- lm(hf_score ~ pf_expression_control, data = hfi_2016)
+tidy(m2)
+```
+
+**4) The Regression line equation was y = 5.05 + 0.37 * pf_expression_control.**
+
+**5) For every 1 unit increase in pf_expression_control, we expect a country’s mean human freedom score to increase 0.368 units.**
+
+## Task3 : Prediction and prediction errors
+
+```{r}
+plot1
+```
+
+**6) we can use the regression line equation to find the personal freedom score which will be 5.906 for a pf_expression_control rating of 3**
+
+**7) This is an overestimate by 0.44**
+
+
+
+## Task 4: Model diagnostics
+
+```{r}
+m1_aug <- augment(m1)
+```
+
+
+```{r}
+ggplot(data = m1_aug, aes(x = .fitted, y = .resid)) +
+  geom_point() +
+  geom_hline(yintercept = 0, linetype = "dashed", color = "red") +
+  xlab("Fitted values") +
+  ylab("Residuals")
+```
+
+
+**8) The points around the red horizantal line are randomly scattered. Since the points show no pattern,  we can say that the linear model is correct.**
+
+
+```{r}
+ggplot(data = m1_aug, aes(x = .resid)) +
+  geom_histogram(binwidth = 0.25) +
+  xlab("Residuals")
+```
+
+**9) By the histogram above we can say that the data voilated the nearly-normal condition, because the histogram is skewed rather than being approximately normal**
+
+**10)Based on the residuals vs fitted plot we can say that the constant variance assumption is not violated because the residuals are scattered with no particular pattern and exhibiting roughly constant variance at each level of fitted values.**
